@@ -1,0 +1,106 @@
+/*
+  ==============================================================================
+
+    This file was auto-generated!
+
+  ==============================================================================
+*/
+
+#include "MainComponent.h"
+
+//==============================================================================
+MainComponent::MainComponent()
+    : synthAudioSource  (keyboardState),
+      keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard)
+{
+    addAndMakeVisible (midiInputListLabel);
+    midiInputListLabel.setText ("MIDI Input:", dontSendNotification);
+    midiInputListLabel.attachToComponent (&midiInputList, true);
+
+    //auto midiInputs = MidiInput::getAvailableDevices();
+    auto midiInputs = MidiInput::getDevices();
+    addAndMakeVisible (midiInputList);
+    midiInputList.setTextWhenNoChoicesAvailable ("No MIDI Inputs Enabled");
+    
+    StringArray midiInputNames;
+    for (auto input : midiInputs)
+        midiInputNames.add (input);
+    
+    midiInputList.addItemList (midiInputNames, 1);
+    midiInputList.onChange = [this] { setMidiInput (midiInputList.getSelectedItemIndex()); };
+
+    for (auto input : midiInputs)
+    {
+        //if (deviceManager.isMidiInputDeviceEnabled (input.identifier))
+        if (deviceManager.isMidiInputEnabled(input))
+        {
+            setMidiInput (midiInputs.indexOf (input));
+            break;
+        }
+    }
+
+    if (midiInputList.getSelectedId() == 0)
+        setMidiInput (0);
+
+    addAndMakeVisible (keyboardComponent);
+    setAudioChannels (0, 2);
+
+    setSize (600, 190);
+    startTimer (400);
+}
+
+MainComponent::~MainComponent()
+{
+    // This shuts down the audio device and clears the audio source.
+    shutdownAudio();
+}
+
+//==============================================================================
+void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+{
+    synthAudioSource.prepareToPlay (samplesPerBlockExpected, sampleRate);
+}
+
+void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+{
+    synthAudioSource.getNextAudioBlock (bufferToFill);
+}
+
+void MainComponent::releaseResources()
+{
+    synthAudioSource.releaseResources();
+}
+
+//==============================================================================
+void MainComponent::paint (Graphics& g)
+{
+    // (Our component is opaque, so we must completely fill the background with a solid colour)
+    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
+
+    // You can add your drawing code here!
+}
+
+void MainComponent::resized()
+{
+    midiInputList    .setBounds (200, 10, getWidth() - 210, 20);
+    keyboardComponent.setBounds (10,  40, getWidth() - 20, getHeight() - 50);
+}
+
+
+void MainComponent::setMidiInput (int index)
+{
+    auto list = MidiInput::getDevices();
+ 
+    deviceManager.removeMidiInputCallback (list[lastInputIndex], synthAudioSource.getMidiCollector()); // [13]
+ 
+    auto newInput = list[index];
+ 
+    if (! deviceManager.isMidiInputEnabled (newInput))
+        deviceManager.setMidiInputEnabled (newInput, true);
+ 
+    deviceManager.addMidiInputCallback (newInput, synthAudioSource.getMidiCollector()); // [12]
+    midiInputList.setSelectedId (index + 1, dontSendNotification);
+ 
+    lastInputIndex = index;
+}
+
