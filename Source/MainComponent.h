@@ -44,6 +44,7 @@ private:
     }
     
     void setMidiInput (int index);
+    void setupMidi();
     
     AudioDeviceManager deviceManager;           // [1]
     AudioFormatManager formatManager;

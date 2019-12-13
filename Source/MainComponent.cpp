@@ -15,39 +15,14 @@ MainComponent::MainComponent()
 : samplerAudioSource(keyboardState),
     keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard)
 {
-    
-    addAndMakeVisible (midiInputListLabel);
-    midiInputListLabel.setText ("MIDI Input:", dontSendNotification);
-    midiInputListLabel.attachToComponent (&midiInputList, true);
-
-    auto midiInputs = MidiInput::getAvailableDevices();
-    addAndMakeVisible (midiInputList);
-    midiInputList.setTextWhenNoChoicesAvailable ("No MIDI Inputs Enabled");
-    
-    StringArray midiInputNames;
-    for (auto input : midiInputs)
-        midiInputNames.add (input.name);
-    
-    midiInputList.addItemList (midiInputNames, 1);
-    midiInputList.onChange = [this] { setMidiInput (midiInputList.getSelectedItemIndex()); };
-
-    for (auto input : midiInputs)
-    {
-        if (deviceManager.isMidiInputDeviceEnabled (input.identifier))
-        {
-            std::cout << "GOT MIDI DEVICE\n";
-            setMidiInput (midiInputs.indexOf (input));
-            break;
-        }
-    }
-
-    if (midiInputList.getSelectedId() == 0)
-        setMidiInput (0);
+    setupMidi();
 
     addAndMakeVisible (keyboardComponent);
     setAudioChannels (0, 2);
     
-        
+    auto file = std::make_unique<File>();
+    // samplerAudioSource.setSourceFile(std::move(file));
+    
     setSize (600, 190);
     startTimer (400);
 }
@@ -107,3 +82,33 @@ void MainComponent::setMidiInput (int index)
     lastInputIndex = index;
 }
 
+
+void MainComponent::setupMidi()
+{
+    addAndMakeVisible (midiInputListLabel);
+    midiInputListLabel.setText ("MIDI Input:", dontSendNotification);
+    midiInputListLabel.attachToComponent (&midiInputList, true);
+
+    auto midiInputs = MidiInput::getAvailableDevices();
+    addAndMakeVisible (midiInputList);
+    midiInputList.setTextWhenNoChoicesAvailable ("No MIDI Inputs Enabled");
+    
+    StringArray midiInputNames;
+    for (auto input : midiInputs)
+        midiInputNames.add (input.name);
+    
+    midiInputList.addItemList (midiInputNames, 1);
+    midiInputList.onChange = [this] { setMidiInput (midiInputList.getSelectedItemIndex()); };
+
+    for (auto input : midiInputs)
+    {
+        if (deviceManager.isMidiInputDeviceEnabled (input.identifier))
+        {
+            setMidiInput (midiInputs.indexOf (input));
+            break;
+        }
+    }
+
+    if (midiInputList.getSelectedId() == 0)
+        setMidiInput (0);
+}

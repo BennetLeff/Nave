@@ -14,11 +14,20 @@
 SamplerAudioSource::SamplerAudioSource(MidiKeyboardState& keyState)
     : keyboardState(keyState)
 {
+    setSourceFile({"/Users/bennetleff/Desktop/Nave/resources/fill.wav"});
+    
+    for(auto i = 0; i < 4; ++i)
+        synth.addVoice(new SamplerVoice());
+}
+
+void SamplerAudioSource::setSourceFile(const File& newFile)
+{
+    sourceFile = newFile;
+
     AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
 
-    auto file = File("/Users/bennetleff/Desktop/Nave/fill.wav");
-    auto* reader = formatManager.createReaderFor (file); // [2]
+    auto* reader = formatManager.createReaderFor (sourceFile); // [2]
 
     AudioSampleBuffer fileBuffer;
 
@@ -42,10 +51,6 @@ SamplerAudioSource::SamplerAudioSource(MidiKeyboardState& keyState)
         }
     }
     
-    
-    for(auto i = 0; i < 4; ++i)
-        synth.addVoice(new SamplerVoice());
-    
     allNotes.setRange(0, 128, true);
     
     auto samplerSound = new SamplerSound("Sample", *reader, allNotes, 64, 0.05, 2.0, 4.0);
@@ -57,11 +62,4 @@ SamplerAudioSource::SamplerAudioSource(MidiKeyboardState& keyState)
 
 void SamplerAudioSource::releaseResources()
 {
-//    int numVoices = synth.getNumVoices();
-//    int numSounds = synth.getNumSounds();
-//    
-//    for (int i = 0; i < numVoices; i++)
-//        synth.removeVoice(i);
-//    for (int i = 0; i < numSounds; i++)
-//        synth.removeSound(i);
 }
