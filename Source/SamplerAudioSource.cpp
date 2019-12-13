@@ -14,14 +14,11 @@
 SamplerAudioSource::SamplerAudioSource(MidiKeyboardState& keyState)
     : keyboardState(keyState)
 {
-    auto file = File("/Users/bennetleff/Desktop/Nave/fill.wav");
-
-    auto stream = std::make_unique<FileInputStream>(file);
-    
     AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
 
-    auto* reader = formatManager.createReaderFor (stream.get()); // [2]
+    auto file = File("/Users/bennetleff/Desktop/Nave/fill.wav");
+    auto* reader = formatManager.createReaderFor (file); // [2]
 
     AudioSampleBuffer fileBuffer;
 
@@ -52,6 +49,8 @@ SamplerAudioSource::SamplerAudioSource(MidiKeyboardState& keyState)
     allNotes.setRange(0, 128, true);
     
     auto samplerSound = new SamplerSound("Sample", *reader, allNotes, 64, 0.05, 2.0, 4.0);
+    
+    delete reader;
     
     synth.addSound(samplerSound);
 }
