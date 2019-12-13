@@ -10,6 +10,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+#include "SamplerAudioSource.h"
 #include "SynthAudioSource.h"
 
 //==============================================================================
@@ -45,13 +46,15 @@ private:
     void setMidiInput (int index);
     
     AudioDeviceManager deviceManager;           // [1]
-
+    AudioFormatManager formatManager;
     
     ComboBox midiInputList;
     Label midiInputListLabel;
     int lastInputIndex = 0;
 
+    std::unique_ptr<SamplerAudioSource> samplerAudioSource;
     SynthAudioSource synthAudioSource;
+    
     MidiKeyboardComponent keyboardComponent;    // [6]
     
     MidiKeyboardState keyboardState;            // [5]

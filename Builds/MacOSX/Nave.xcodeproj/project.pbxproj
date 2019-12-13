@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		02CE20669E95A82EC2271680 /* include_juce_audio_utils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 45E5344CAA0730F8F0501790 /* include_juce_audio_utils.mm */; };
 		0BBEBB3083821EA8FBE37566 /* include_juce_opengl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B1674E3321FC30120A91676 /* include_juce_opengl.mm */; };
-		12DF7A2923A2E6270012E6D7 /* Sampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 12DF7A2823A2E6270012E6D7 /* Sampler.cpp */; };
+		12DF7A2923A2E6270012E6D7 /* SamplerAudioSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 12DF7A2823A2E6270012E6D7 /* SamplerAudioSource.cpp */; };
 		12DF7A2C23A2E7800012E6D7 /* SynthAudioSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 12DF7A2B23A2E7800012E6D7 /* SynthAudioSource.cpp */; };
 		1900A579C359D6D031A157B7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DCB2A9DCF8097CC0A5DF768 /* Cocoa.framework */; };
 		2047408C1E5EE047CEBDD5C2 /* include_juce_graphics.mm in Sources */ = {isa = PBXBuildFile; fileRef = 403107062AE4CF3A6E6E0EEF /* include_juce_graphics.mm */; };
@@ -42,8 +42,8 @@
 		01EC5B85F8DB4D7D6CD6EE26 /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = /Users/bennetleff/Documents/JUCE/modules/juce_audio_processors; sourceTree = "<absolute>"; };
 		02737FCEE8B8EB2625846640 /* juce_gui_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_basics; path = /Users/bennetleff/Documents/JUCE/modules/juce_gui_basics; sourceTree = "<absolute>"; };
 		0E1C2E519A47B368DA7AED3B /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
-		12DF7A2723A2E6270012E6D7 /* Sampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sampler.h; path = ../../Source/Sampler.h; sourceTree = "<group>"; };
-		12DF7A2823A2E6270012E6D7 /* Sampler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Sampler.cpp; path = ../../Source/Sampler.cpp; sourceTree = "<group>"; };
+		12DF7A2723A2E6270012E6D7 /* SamplerAudioSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SamplerAudioSource.h; path = ../../Source/SamplerAudioSource.h; sourceTree = "<group>"; };
+		12DF7A2823A2E6270012E6D7 /* SamplerAudioSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SamplerAudioSource.cpp; path = ../../Source/SamplerAudioSource.cpp; sourceTree = "<group>"; };
 		12DF7A2A23A2E7800012E6D7 /* SynthAudioSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SynthAudioSource.h; path = ../../Source/SynthAudioSource.h; sourceTree = "<group>"; };
 		12DF7A2B23A2E7800012E6D7 /* SynthAudioSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SynthAudioSource.cpp; path = ../../Source/SynthAudioSource.cpp; sourceTree = "<group>"; };
 		192E1241FBCEEBC96416B7D4 /* RecentFilesMenuTemplate.nib */ = {isa = PBXFileReference; lastKnownFileType = file.nib; path = RecentFilesMenuTemplate.nib; sourceTree = SOURCE_ROOT; };
@@ -117,8 +117,8 @@
 			children = (
 				12DF7A2B23A2E7800012E6D7 /* SynthAudioSource.cpp */,
 				12DF7A2A23A2E7800012E6D7 /* SynthAudioSource.h */,
-				12DF7A2823A2E6270012E6D7 /* Sampler.cpp */,
-				12DF7A2723A2E6270012E6D7 /* Sampler.h */,
+				12DF7A2823A2E6270012E6D7 /* SamplerAudioSource.cpp */,
+				12DF7A2723A2E6270012E6D7 /* SamplerAudioSource.h */,
 				D87F792F3A641919088A7BD7 /* MainComponent.h */,
 				95618FC8513CAFC47B334511 /* MainComponent.cpp */,
 				2BD26A17F909720D04D73748 /* Main.cpp */,
@@ -310,7 +310,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12DF7A2923A2E6270012E6D7 /* Sampler.cpp in Sources */,
+				12DF7A2923A2E6270012E6D7 /* SamplerAudioSource.cpp in Sources */,
 				661C74DF3C7E0F7A04B71385 /* MainComponent.cpp in Sources */,
 				4A25705454F665A62B29E77B /* Main.cpp in Sources */,
 				F5EB11592E8AE7DBC4E18FCB /* include_juce_audio_basics.mm in Sources */,
