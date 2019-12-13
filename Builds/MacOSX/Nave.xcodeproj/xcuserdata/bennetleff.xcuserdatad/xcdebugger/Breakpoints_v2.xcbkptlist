@@ -14,9 +14,9 @@
             filePath = "../../Source/SamplerAudioSource.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
-            landmarkName = "SamplerAudioSource::SamplerAudioSource(keyState, audioFormatReader)"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "SamplerAudioSource::SamplerAudioSource(keyState)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -30,9 +30,9 @@
             filePath = "../../Source/SamplerAudioSource.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
-            landmarkName = "SamplerAudioSource::SamplerAudioSource(keyState, audioFormatReader)"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "SamplerAudioSource::SamplerAudioSource(keyState)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -46,9 +46,9 @@
             filePath = "../../Source/SamplerAudioSource.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "19"
-            endingLineNumber = "19"
-            landmarkName = "SamplerAudioSource::SamplerAudioSource(keyState, audioFormatReader)"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "SamplerAudioSource::SamplerAudioSource(keyState)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -62,9 +62,9 @@
             filePath = "../../Source/SamplerAudioSource.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
-            landmarkName = "SamplerAudioSource::SamplerAudioSource(keyState, audioFormatReader)"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
+            landmarkName = "SamplerAudioSource::SamplerAudioSource(keyState)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

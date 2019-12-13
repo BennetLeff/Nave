@@ -52,12 +52,11 @@ private:
     Label midiInputListLabel;
     int lastInputIndex = 0;
 
-    std::unique_ptr<SamplerAudioSource> samplerAudioSource;
-    SynthAudioSource synthAudioSource;
+    SamplerAudioSource samplerAudioSource;
     
     MidiKeyboardComponent keyboardComponent;    // [6]
     
     MidiKeyboardState keyboardState;            // [5]
-    
+        
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

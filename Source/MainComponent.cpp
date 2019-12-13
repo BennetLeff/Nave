@@ -12,60 +12,28 @@
 
 //==============================================================================
 MainComponent::MainComponent()
-: synthAudioSource{keyboardState},
+: samplerAudioSource(keyboardState),
     keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard)
 {
-    auto file = File("/Users/bennetleff/Desktop/Nave/fill.wav");
-
-    AudioFormatManager formatManager;
-    formatManager.registerBasicFormats();
-
-    auto* reader = formatManager.createReaderFor (file); // [2]
-
-    AudioSampleBuffer fileBuffer;
-
-    if (reader != nullptr)
-    {
-        auto duration = reader->lengthInSamples / reader->sampleRate;                 // [3]
-
-        if (duration < 4)
-        {
-            fileBuffer.setSize (reader->numChannels, (int) reader->lengthInSamples);  // [4]
-            reader->read (&fileBuffer,                                                // [5]
-                          0,                                                          //  [5.1]
-                          (int) reader->lengthInSamples,                              //  [5.2]
-                          0,                                                          //  [5.3]
-                          true,                                                       //  [5.4]
-                          true);                                                      //  [5.5]
-        }
-        else
-        {
-            // handle the error that the file is 4 seconds or longer..
-        }
-    }
-
-    samplerAudioSource = std::make_unique<SamplerAudioSource>(keyboardState, *reader);
     
     addAndMakeVisible (midiInputListLabel);
     midiInputListLabel.setText ("MIDI Input:", dontSendNotification);
     midiInputListLabel.attachToComponent (&midiInputList, true);
 
-    //auto midiInputs = MidiInput::getAvailableDevices();
-    auto midiInputs = MidiInput::getDevices();
+    auto midiInputs = MidiInput::getAvailableDevices();
     addAndMakeVisible (midiInputList);
     midiInputList.setTextWhenNoChoicesAvailable ("No MIDI Inputs Enabled");
     
     StringArray midiInputNames;
     for (auto input : midiInputs)
-        midiInputNames.add (input);
+        midiInputNames.add (input.name);
     
     midiInputList.addItemList (midiInputNames, 1);
     midiInputList.onChange = [this] { setMidiInput (midiInputList.getSelectedItemIndex()); };
 
     for (auto input : midiInputs)
     {
-        //if (deviceManager.isMidiInputDeviceEnabled (input.identifier))
-        if (deviceManager.isMidiInputEnabled(input))
+        if (deviceManager.isMidiInputDeviceEnabled (input.identifier))
         {
             std::cout << "GOT MIDI DEVICE\n";
             setMidiInput (midiInputs.indexOf (input));
@@ -93,23 +61,17 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    // if (samplerAudioSource != nullptr)
-    samplerAudioSource->prepareToPlay (samplesPerBlockExpected, sampleRate);
-    //synthAudioSource.prepareToPlay (samplesPerBlockExpected, sampleRate);
+    samplerAudioSource.prepareToPlay (samplesPerBlockExpected, sampleRate);
 }
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    // if (samplerAudioSource != nullptr)
-    samplerAudioSource->getNextAudioBlock (bufferToFill);
-    // synthAudioSource.getNextAudioBlock (bufferToFill);
+    samplerAudioSource.getNextAudioBlock (bufferToFill);
 }
 
 void MainComponent::releaseResources()
 {
-    // if (samplerAudioSource != nullptr)
-    samplerAudioSource->releaseResources();
-    // synthAudioSource.releaseResources();
+    samplerAudioSource.releaseResources();
 }
 
 //==============================================================================
@@ -132,16 +94,14 @@ void MainComponent::setMidiInput (int index)
 {
     auto list = MidiInput::getDevices();
  
-//    deviceManager.removeMidiInputCallback (list[lastInputIndex], samplerAudioSource->getMidiCollector()); // [13]
-    deviceManager.removeMidiInputCallback (list[lastInputIndex], synthAudioSource.getMidiCollector()); // [13]
+    deviceManager.removeMidiInputCallback (list[lastInputIndex], samplerAudioSource.getMidiCollector()); // [13]
     
     auto newInput = list[index];
  
     if (! deviceManager.isMidiInputEnabled (newInput))
         deviceManager.setMidiInputEnabled (newInput, true);
  
-    // deviceManager.addMidiInputCallback (newInput, samplerAudioSource->getMidiCollector()); // [12]
-    deviceManager.addMidiInputCallback (newInput, synthAudioSource.getMidiCollector());
+    deviceManager.addMidiInputCallback (newInput, samplerAudioSource.getMidiCollector()); // [12]
     midiInputList.setSelectedId (index + 1, dontSendNotification);
  
     lastInputIndex = index;

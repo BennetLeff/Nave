@@ -16,7 +16,7 @@
 class SamplerAudioSource : public AudioSource
 {
 public:
-    SamplerAudioSource (MidiKeyboardState& keyState, AudioFormatReader& audioFormatReader);
+    SamplerAudioSource (MidiKeyboardState& keyState);
     
     void setUsingSamplerSound()
     {
@@ -29,7 +29,7 @@ public:
         midiCollector.reset (sampleRate);
     }
     
-    void releaseResources() override {}
+    void releaseResources() override;
     
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override
     {
@@ -48,10 +48,11 @@ public:
     {
         return &midiCollector;
     }
-    
+        
 private:
     MidiKeyboardState& keyboardState;
     MidiMessageCollector midiCollector;
     Synthesiser synth;
-    std::unique_ptr<SamplerSound> samplerSound;
+    
+    BigInteger allNotes;
 };
