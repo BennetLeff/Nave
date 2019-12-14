@@ -49,12 +49,16 @@ public:
         return &midiCollector;
     }
         
+    void setSourceFile(const File& newFile);
+    
 private:
     MidiKeyboardState& keyboardState;
     MidiMessageCollector midiCollector;
     Synthesiser synth;
     
     BigInteger allNotes;
+    
+    File sourceFile;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplerAudioSource)
 };
