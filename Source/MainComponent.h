@@ -44,19 +44,29 @@ private:
     }
     
     void setMidiInput (int index);
+    void setupMidi();
     
-    AudioDeviceManager deviceManager;           // [1]
+    AudioDeviceManager deviceManager;
     AudioFormatManager formatManager;
     
+    /*
+     * GUI Components
+     */
     ComboBox midiInputList;
     Label midiInputListLabel;
     int lastInputIndex = 0;
-
+    TextButton setSample;
+    
+    void setSampleButtonClicked();
+    
+    /*
+     * Audio Components
+     */
     SamplerAudioSource samplerAudioSource;
     
-    MidiKeyboardComponent keyboardComponent;    // [6]
+    MidiKeyboardComponent keyboardComponent;
+    MidiKeyboardState keyboardState;
     
-    MidiKeyboardState keyboardState;            // [5]
         
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
