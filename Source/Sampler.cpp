@@ -53,5 +53,6 @@ void Sampler::resized()
 
 void Sampler::setSourceFile(const File& newFile)
 {
+    sampleSourceFile = newFile;
     samplerAudioSource.setSourceFile(newFile);
 }

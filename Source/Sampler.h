@@ -48,20 +48,11 @@ public:
     MidiMessageCollector* getMidiCollector()
     {
         return samplerAudioSource.getMidiCollector();
-//        return &midiCollector;
     }
     
 private:
     SamplerAudioSource samplerAudioSource;
-    
-//    MidiKeyboardState& keyboardState;
-//    MidiMessageCollector midiCollector;
-    
-    // The synth which handles "playing" the sounds we load.
-//    Synthesiser synth;
-    
-    // 0-127 MIDI notes in this case.
-//    BigInteger allNotes;
+    File sampleSourceFile;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Sampler)
 };
