@@ -20,10 +20,13 @@ MainComponent::MainComponent()
     addAndMakeVisible (keyboardComponent);
     setAudioChannels (0, 2);
     
-    auto file = std::make_unique<File>();
-    // samplerAudioSource.setSourceFile(std::move(file));
+    setSample.setBounds(10, 10, 100, 20);
+    addAndMakeVisible(&setSample);
+
+    setSample.setButtonText("Set sample");
+    setSample.onClick = [this] { setSampleButtonClicked(); };
     
-    setSize (600, 190);
+    setSize (800, 300);
     startTimer (400);
 }
 
@@ -111,4 +114,17 @@ void MainComponent::setupMidi()
 
     if (midiInputList.getSelectedId() == 0)
         setMidiInput (0);
+}
+
+void MainComponent::setSampleButtonClicked()
+{
+    FileChooser chooser ("Select a Wave file to play...",
+                         {},
+                         "*.wav");
+ 
+    if (chooser.browseForFileToOpen())
+    {
+        auto file = chooser.getResult();
+        samplerAudioSource.setSourceFile(file);
+    }
 }

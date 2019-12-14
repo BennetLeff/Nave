@@ -13,9 +13,7 @@
 //==============================================================================
 SamplerAudioSource::SamplerAudioSource(MidiKeyboardState& keyState)
     : keyboardState(keyState)
-{
-    setSourceFile({"/Users/bennetleff/Desktop/Nave/resources/fill.wav"});
-    
+{    
     for(auto i = 0; i < 4; ++i)
         synth.addVoice(new SamplerVoice());
 }
