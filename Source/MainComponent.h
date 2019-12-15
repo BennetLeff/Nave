@@ -10,7 +10,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include "SamplerAudioSource.h"
+#include "Sampler.h"
 #include "SynthAudioSource.h"
 
 //==============================================================================
@@ -39,7 +39,7 @@ private:
     //==============================================================================
     void timerCallback() override
     {
-        keyboardComponent.grabKeyboardFocus();
+        keyboardComponent->grabKeyboardFocus();
         stopTimer();
     }
     
@@ -62,9 +62,9 @@ private:
     /*
      * Audio Components
      */
-    SamplerAudioSource samplerAudioSource;
+    Sampler sampler;
     
-    MidiKeyboardComponent keyboardComponent;
+    std::unique_ptr<MidiKeyboardComponent> keyboardComponent;
     MidiKeyboardState keyboardState;
     
         

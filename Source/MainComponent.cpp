@@ -8,16 +8,19 @@
 
 #include "MainComponent.h"
 
-#include "SamplerAudioSource.h"
+#include "Sampler.h"
 
 //==============================================================================
 MainComponent::MainComponent()
-: samplerAudioSource(keyboardState),
-    keyboardComponent (keyboardState, MidiKeyboardComponent::horizontalKeyboard)
+: sampler(keyboardState)
 {
+    keyboardComponent = std::make_unique<MidiKeyboardComponent>(keyboardState, MidiKeyboardComponent::horizontalKeyboard);
+
     setupMidi();
 
-    addAndMakeVisible (keyboardComponent);
+    addAndMakeVisible(&sampler);
+    
+    addAndMakeVisible (keyboardComponent.get());
     setAudioChannels (0, 2);
     
     setSample.setBounds(10, 10, 100, 20);
@@ -25,6 +28,7 @@ MainComponent::MainComponent()
 
     setSample.setButtonText("Set sample");
     setSample.onClick = [this] { setSampleButtonClicked(); };
+    
     
     setSize (800, 300);
     startTimer (400);
@@ -39,17 +43,17 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    samplerAudioSource.prepareToPlay (samplesPerBlockExpected, sampleRate);
+    sampler.prepareToPlay (samplesPerBlockExpected, sampleRate);
 }
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    samplerAudioSource.getNextAudioBlock (bufferToFill);
+    sampler.getNextAudioBlock (bufferToFill);
 }
 
 void MainComponent::releaseResources()
 {
-    samplerAudioSource.releaseResources();
+    sampler.releaseResources();
 }
 
 //==============================================================================
@@ -64,7 +68,7 @@ void MainComponent::paint (Graphics& g)
 void MainComponent::resized()
 {
     midiInputList    .setBounds (200, 10, getWidth() - 210, 20);
-    keyboardComponent.setBounds (10,  40, getWidth() - 20, getHeight() - 50);
+    keyboardComponent->setBounds (10,  40, getWidth() - 20, getHeight() - 50);
 }
 
 
@@ -72,14 +76,14 @@ void MainComponent::setMidiInput (int index)
 {
     auto list = MidiInput::getDevices();
  
-    deviceManager.removeMidiInputCallback (list[lastInputIndex], samplerAudioSource.getMidiCollector()); // [13]
+    deviceManager.removeMidiInputCallback (list[lastInputIndex], sampler.getMidiCollector()); // [13]
     
     auto newInput = list[index];
  
     if (! deviceManager.isMidiInputEnabled (newInput))
         deviceManager.setMidiInputEnabled (newInput, true);
  
-    deviceManager.addMidiInputCallback (newInput, samplerAudioSource.getMidiCollector()); // [12]
+    deviceManager.addMidiInputCallback (newInput, sampler.getMidiCollector()); // [12]
     midiInputList.setSelectedId (index + 1, dontSendNotification);
  
     lastInputIndex = index;
@@ -125,6 +129,6 @@ void MainComponent::setSampleButtonClicked()
     if (chooser.browseForFileToOpen())
     {
         auto file = chooser.getResult();
-        samplerAudioSource.setSourceFile(file);
+        sampler.setSourceFile(file);
     }
 }

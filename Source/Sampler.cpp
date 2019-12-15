@@ -13,11 +13,12 @@
 
 //==============================================================================
 Sampler::Sampler(MidiKeyboardState& keyboardState)
- : samplerAudioSource(keyboardState)
+        : samplerAudioSource(keyboardState),
+          thumbnailCache (5),
+          thumbnail(512, formatManager, thumbnailCache)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
-
+    formatManager.registerBasicFormats();
+    // thumbnail.addChangeListener(this);
 }
 
 Sampler::~Sampler()
@@ -26,13 +27,6 @@ Sampler::~Sampler()
 
 void Sampler::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (Colours::grey);
@@ -42,6 +36,14 @@ void Sampler::paint (Graphics& g)
     g.setFont (14.0f);
     g.drawText ("Sampler", getLocalBounds(),
                 Justification::centred, true);   // draw some placeholder text
+    
+    // Painting the audio waveform
+    Rectangle<int> thumbnailBounds (10, 100, getWidth() - 20, getHeight() - 120);
+    
+    if (thumbnail.getNumChannels() == 0)
+        paintIfNoFileLoaded (g, thumbnailBounds);
+    else
+        paintIfFileLoaded (g, thumbnailBounds);
 }
 
 void Sampler::resized()
