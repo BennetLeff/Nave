@@ -51,7 +51,7 @@ public:
     }
     
 private:
-    void changeListenerCallback(ChangeBroadcaster* source) override { }
+    void changeListenerCallback(ChangeBroadcaster* source) override;
     
     void paintIfNoFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds)
     {

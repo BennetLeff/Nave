@@ -38,7 +38,7 @@ void Sampler::paint (Graphics& g)
                 Justification::centred, true);   // draw some placeholder text
     
     // Painting the audio waveform
-    Rectangle<int> thumbnailBounds (10, 100, getWidth() - 20, getHeight() - 120);
+    Rectangle<int> thumbnailBounds (10, 20, getWidth() - 20, getHeight() - 40);
     
     if (thumbnail.getNumChannels() == 0)
         paintIfNoFileLoaded (g, thumbnailBounds);
@@ -57,4 +57,13 @@ void Sampler::setSourceFile(const File& newFile)
 {
     sampleSourceFile = newFile;
     samplerAudioSource.setSourceFile(newFile);
+    thumbnail.setSource(new FileInputSource(newFile));
+}
+
+void Sampler::changeListenerCallback(ChangeBroadcaster *source)
+{
+    if (source == &thumbnail)
+    {
+        repaint();
+    }
 }
