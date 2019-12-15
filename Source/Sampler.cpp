@@ -18,7 +18,7 @@ Sampler::Sampler(MidiKeyboardState& keyboardState)
           thumbnail(512, formatManager, thumbnailCache)
 {
     formatManager.registerBasicFormats();
-    // thumbnail.addChangeListener(this);
+    thumbnail.addChangeListener(this);
 }
 
 Sampler::~Sampler()

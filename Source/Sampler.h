@@ -22,7 +22,7 @@
  * Any other GUI features that are directly related to the use of the Sampler
  * should probably be here as well.
  */
-class Sampler    : public AudioSource, public Component
+class Sampler    : public AudioSource, public Component, public ChangeListener
 {
 public:
     Sampler(MidiKeyboardState& keyboardState);
@@ -51,6 +51,8 @@ public:
     }
     
 private:
+    void changeListenerCallback(ChangeBroadcaster* source) override { }
+    
     void paintIfNoFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds)
     {
         g.setColour (Colours::darkgrey);

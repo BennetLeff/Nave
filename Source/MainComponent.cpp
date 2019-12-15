@@ -21,16 +21,16 @@ MainComponent::MainComponent()
     addAndMakeVisible(&sampler);
     
     addAndMakeVisible (keyboardComponent.get());
+    
     setAudioChannels (0, 2);
     
-    setSample.setBounds(10, 10, 100, 20);
     addAndMakeVisible(&setSample);
 
     setSample.setButtonText("Set sample");
     setSample.onClick = [this] { setSampleButtonClicked(); };
     
     
-    setSize (800, 300);
+    setSize (800, 600);
     startTimer (400);
 }
 
@@ -67,8 +67,11 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    midiInputList    .setBounds (200, 10, getWidth() - 210, 20);
-    keyboardComponent->setBounds (10,  40, getWidth() - 20, getHeight() - 50);
+    midiInputList.setBounds (200, 10, getWidth() - 210, 20);
+    sampler.setBounds(10, 30, getWidth() - 20, 170);
+    keyboardComponent->setBounds (10,  210, getWidth() - 20, getHeight() - 50);
+    setSample.setBounds(10, 10, 100, 20);
+
 }
 
 
