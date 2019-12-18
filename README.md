@@ -17,3 +17,5 @@ I'll be souping up the sampler, to include:
 Naturally, one can build a granular synthesizer on top of a sampler
 through some reasonable modifications. Once I have a working granular synthesizer I will further evaluate how to 
 morph it into the concatenative synthesizer.
+
+At the moment the project resembles a basic sampler. One can load any WAV file and play it on a midi keyboard. There's even a thumbnail that shows what the waveform looks like.
