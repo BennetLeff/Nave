@@ -8,17 +8,15 @@
 
 #include "MainComponent.h"
 
-#include "Sampler.h"
-
 //==============================================================================
 MainComponent::MainComponent()
-: sampler(keyboardState)
+: granularSynth(keyboardState)
 {
     keyboardComponent = std::make_unique<MidiKeyboardComponent>(keyboardState, MidiKeyboardComponent::horizontalKeyboard);
 
     setupMidi();
 
-    addAndMakeVisible(&sampler);
+    addAndMakeVisible(&granularSynth);
     
     addAndMakeVisible (keyboardComponent.get());
     
@@ -41,19 +39,19 @@ MainComponent::~MainComponent()
 }
 
 //==============================================================================
-void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+void MainComponent::prepareToPlay (int samplesPerBlockExpected, double granularSynthate)
 {
-    sampler.prepareToPlay (samplesPerBlockExpected, sampleRate);
+    granularSynth.prepareToPlay (samplesPerBlockExpected, granularSynthate);
 }
 
 void MainComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    sampler.getNextAudioBlock (bufferToFill);
+    granularSynth.getNextAudioBlock (bufferToFill);
 }
 
 void MainComponent::releaseResources()
 {
-    sampler.releaseResources();
+    granularSynth.releaseResources();
 }
 
 //==============================================================================
@@ -68,7 +66,7 @@ void MainComponent::paint (Graphics& g)
 void MainComponent::resized()
 {
     midiInputList.setBounds (200, 10, getWidth() - 210, 20);
-    sampler.setBounds(10, 30, getWidth() - 20, 170);
+    granularSynth.setBounds(10, 30, getWidth() - 20, 170);
     keyboardComponent->setBounds (10,  210, getWidth() - 20, getHeight() - 50);
     setSample.setBounds(10, 10, 100, 20);
 
@@ -79,14 +77,14 @@ void MainComponent::setMidiInput (int index)
 {
     auto list = MidiInput::getDevices();
  
-    deviceManager.removeMidiInputCallback (list[lastInputIndex], sampler.getMidiCollector()); // [13]
+    deviceManager.removeMidiInputCallback (list[lastInputIndex], granularSynth.getMidiCollector()); // [13]
     
     auto newInput = list[index];
  
     if (! deviceManager.isMidiInputEnabled (newInput))
         deviceManager.setMidiInputEnabled (newInput, true);
  
-    deviceManager.addMidiInputCallback (newInput, sampler.getMidiCollector()); // [12]
+    deviceManager.addMidiInputCallback (newInput, granularSynth.getMidiCollector()); // [12]
     midiInputList.setSelectedId (index + 1, dontSendNotification);
  
     lastInputIndex = index;
@@ -132,6 +130,6 @@ void MainComponent::setSampleButtonClicked()
     if (chooser.browseForFileToOpen())
     {
         auto file = chooser.getResult();
-        sampler.setSourceFile(file);
+        granularSynth.setSourceFile(file);
     }
 }

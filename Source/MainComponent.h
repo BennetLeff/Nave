@@ -10,8 +10,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include "Sampler.h"
-#include "SynthAudioSource.h"
+#include "GranularSynthesizer.h"
+#include "GranularAudioSource.h"
 
 //==============================================================================
 /*
@@ -62,7 +62,7 @@ private:
     /*
      * Audio Components
      */
-    Sampler sampler;
+    GranularSynthesizer granularSynth;
     
     std::unique_ptr<MidiKeyboardComponent> keyboardComponent;
     MidiKeyboardState keyboardState;

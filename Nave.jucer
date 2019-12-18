@@ -3,6 +3,22 @@
 <JUCERPROJECT id="SyQ9g4" name="Nave" projectType="guiapp" jucerVersion="5.4.5">
   <MAINGROUP id="ZqHcS3" name="Nave">
     <GROUP id="{C3E1973A-F9A9-EA2C-7C06-AC04BFDFD624}" name="Source">
+      <FILE id="hDRftg" name="GranularSynthesizer.cpp" compile="1" resource="0"
+            file="Source/GranularSynthesizer.cpp"/>
+      <FILE id="eC6mvR" name="GranularSynthesizer.h" compile="0" resource="0"
+            file="Source/GranularSynthesizer.h"/>
+      <FILE id="bAGXsj" name="GranularVoice.cpp" compile="1" resource="0"
+            file="Source/GranularVoice.cpp"/>
+      <FILE id="Fy5Fi4" name="GranularVoice.h" compile="0" resource="0" file="Source/GranularVoice.h"/>
+      <FILE id="lViSPn" name="GranularSound.cpp" compile="1" resource="0"
+            file="Source/GranularSound.cpp"/>
+      <FILE id="Sw1kLZ" name="GranularSound.h" compile="0" resource="0" file="Source/GranularSound.h"/>
+      <FILE id="oeXpAY" name="Sampler.cpp" compile="1" resource="0" file="Source/Sampler.cpp"/>
+      <FILE id="F9T1pO" name="Sampler.h" compile="0" resource="0" file="Source/Sampler.h"/>
+      <FILE id="KEYdNu" name="GranularAudioSource.cpp" compile="1" resource="0"
+            file="Source/GranularAudioSource.cpp"/>
+      <FILE id="ITP0h4" name="GranularAudioSource.h" compile="0" resource="0"
+            file="Source/GranularAudioSource.h"/>
       <FILE id="UPgFZr" name="SynthAudioSource.cpp" compile="1" resource="0"
             file="Source/SynthAudioSource.cpp"/>
       <FILE id="JCtpP0" name="SynthAudioSource.h" compile="0" resource="0"
