@@ -57,7 +57,10 @@ void GranularVoice::stopNote (float /*velocity*/, bool allowTailOff)
 void GranularVoice::pitchWheelMoved (int /*newValue*/) {}
 void GranularVoice::controllerMoved (int /*controllerNumber*/, int /*newValue*/) {}
 
-//==============================================================================
+/*
+ * This function currently renders each buffer by playing through the entire data
+ * within a GranularSound. Instead, we'd like to play a section of that data, a Grain.
+ */
 void GranularVoice::renderNextBlock (AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
 {
     if (auto* playingSound = static_cast<GranularSound*> (getCurrentlyPlayingSound().get()))
@@ -66,17 +69,25 @@ void GranularVoice::renderNextBlock (AudioBuffer<float>& outputBuffer, int start
         const float* const inL = data.getReadPointer (0);
         const float* const inR = data.getNumChannels() > 1 ? data.getReadPointer (1) : nullptr;
 
+        // Are we in stereo? If yes then set outR to the second write buffer pointer of data,
+        // else set outR to nullptr.
         float* outL = outputBuffer.getWritePointer (0, startSample);
         float* outR = outputBuffer.getNumChannels() > 1 ? outputBuffer.getWritePointer (1, startSample) : nullptr;
 
+        // We will fill the buffer with numSamples samples,
+        // but if the number of samples in a grain is less than numSamples,
+        // we'll need to loop through the grain some number of times to fill the buffer.
         while (--numSamples >= 0)
         {
             auto pos = (int) sourceSamplePosition;
             auto alpha = (float) (sourceSamplePosition - pos);
             auto invAlpha = 1.0f - alpha;
 
-            // just using a very simple linear interpolation here..
+            // Using a very simple linear interpolation here. Going to need to work on this.
+            // Possibly use the CatmullRomInterpolator, or LagrangeInterpolator classes from
+            // the JUCE library.
             float l = (inL[pos] * invAlpha + inL[pos + 1] * alpha);
+            // Again, only process right channel if we're in stereo.
             float r = (inR != nullptr) ? (inR[pos] * invAlpha + inR[pos + 1] * alpha)
                                        : l;
 
