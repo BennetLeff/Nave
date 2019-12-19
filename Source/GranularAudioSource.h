@@ -57,44 +57,39 @@ class GranularAudioSource    : public AudioSource
 public:
     GranularAudioSource(MidiKeyboardState& keyState);
         
-        void setUsingSamplerSound()
-        {
-            synth.clearSounds();
-        }
-        
-        void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override
-        {
-            synth.setCurrentPlaybackSampleRate (sampleRate);
-            midiCollector.reset (sampleRate);
-        }
-        
-        void releaseResources() override;
-        
-        void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override
-        {
-            bufferToFill.clearActiveBufferRegion();
-            
-            MidiBuffer incomingMidi;
-            midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
-            
-            keyboardState.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
-            
-            synth.renderNextBlock(*bufferToFill.buffer, incomingMidi,
-                                  bufferToFill.startSample, bufferToFill.numSamples);
-        }
-        
-        MidiMessageCollector* getMidiCollector()
-        {
-            return &midiCollector;
-        }
-            
-        void setSourceFile(const File& newFile);
-        
-    private:
-        
+    void setUsingSamplerSound()
+    {
+        synth.clearSounds();
+    }
     
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override
+    {
+        synth.setCurrentPlaybackSampleRate (sampleRate);
+        midiCollector.reset (sampleRate);
+    }
     
-
+    void releaseResources() override;
+    
+    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override
+    {
+        bufferToFill.clearActiveBufferRegion();
+        
+        MidiBuffer incomingMidi;
+        midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
+        
+        keyboardState.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
+        
+        synth.renderNextBlock(*bufferToFill.buffer, incomingMidi,
+                              bufferToFill.startSample, bufferToFill.numSamples);
+    }
+    
+    MidiMessageCollector* getMidiCollector()
+    {
+        return &midiCollector;
+    }
+        
+    void setSourceFile(const File& newFile);
+        
 private:
     // Assuming a constant grain size for each grain.
     int grainSize;
