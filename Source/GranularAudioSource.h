@@ -56,32 +56,31 @@ class GranularAudioSource    : public AudioSource
 {
 public:
     GranularAudioSource(MidiKeyboardState& keyState);
+    
+    // The JUCE API still uses raw pointers in some places
+    // so we'll have to manually delete them.
+    ~GranularAudioSource();
         
     void setUsingSamplerSound()
     {
         synth.clearSounds();
     }
     
+    /*
+     * sampleRate is in hertz or cycles per second. The grain size is
+     * dependent on sampleRate. If the sampleRate is 44100 samples per second
+     * then a 10 ms grain size corresponds to 441 samples.
+     */
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override
     {
+        samplesPerGrain = sampleRate * (grainSize / 1000);
         synth.setCurrentPlaybackSampleRate (sampleRate);
         midiCollector.reset (sampleRate);
     }
     
     void releaseResources() override;
     
-    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override
-    {
-        bufferToFill.clearActiveBufferRegion();
-        
-        MidiBuffer incomingMidi;
-        midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
-        
-        keyboardState.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
-        
-        synth.renderNextBlock(*bufferToFill.buffer, incomingMidi,
-                              bufferToFill.startSample, bufferToFill.numSamples);
-    }
+    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
     
     MidiMessageCollector* getMidiCollector()
     {
@@ -91,8 +90,20 @@ public:
     void setSourceFile(const File& newFile);
         
 private:
+    // Parses a audio file's samples and creates partitioned grains
+    // of size samplesPerGrain.
+    void granulateSourceFile();
+    
     // Assuming a constant grain size for each grain.
-    int grainSize;
+    // The unit for grainSize is miliseconds and the default is 10 ms.
+    double grainSize;
+    double samplesPerGrain;
+    
+    // grains is set in granulateSourceFile.
+    // It is a vector of sequential grains in a sample.
+    // Each grain is captured by an AudioBuffer
+    // for ease of use with the JUCE API.
+    std::vector<AudioBuffer<float>*> grains;
     
     // Fields for MIDI interaction
     MidiKeyboardState& keyboardState;
@@ -104,6 +115,8 @@ private:
     
     // The source file or sample we want to "granulate"
     File sourceFile;
+    // Must be a raw pointer because of the JUCE API.
+    AudioFormatReader* reader;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GranularAudioSource)
 };

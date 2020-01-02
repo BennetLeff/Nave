@@ -69,7 +69,6 @@ void MainComponent::resized()
     granularSynth.setBounds(10, 30, getWidth() - 20, 170);
     keyboardComponent->setBounds (10,  210, getWidth() - 20, getHeight() - 50);
     setSample.setBounds(10, 10, 100, 20);
-
 }
 
 
