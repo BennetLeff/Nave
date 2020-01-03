@@ -110,8 +110,9 @@ void GranularVoice::renderNextBlock (AudioBuffer<float>& outputBuffer, int start
 
             if (sourceSamplePosition > playingSound->length)
             {
-                stopNote (0.0f, false);
-                break;
+                // stopNote (0.0f, true);
+                // break;
+                sourceSamplePosition = 0;
             }
         }
     }

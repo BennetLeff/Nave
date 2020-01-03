@@ -104,7 +104,7 @@ private:
      * Each grain is captured by an AudioBuffer
      * for ease of use with the JUCE API.
      */
-     std::vector<AudioBuffer<float>*> grains;
+    std::vector<AudioBuffer<float>*> grains;
     
     // Fields for MIDI interaction
     MidiKeyboardState& keyboardState;
@@ -113,6 +113,9 @@ private:
     
     // allNotes will be a range of 0-127
     BigInteger allNotes;
+    
+    double envelopeAttack;
+    double envelopeRelease;
     
     // The source file or sample we want to "granulate"
     File sourceFile;

@@ -14,7 +14,10 @@
 //==============================================================================
 GranularAudioSource::GranularAudioSource(MidiKeyboardState& keyState)
     :   grainSize(10), // 10 ms
-        keyboardState(keyState)
+        keyboardState(keyState),
+        envelopeAttack(0.05), // 50 ms
+        envelopeRelease(2.0)  // 2 seconds
+        
 {
     for(auto i = 0; i < 4; ++i)
         synth.addVoice(new GranularVoice());
@@ -58,14 +61,14 @@ void GranularAudioSource::setSourceFile(const File& newFile)
     grains = granulateSourceFile();
     
     auto granularSound = new GranularSound ("Grain",
-                                        //AudioFormatReader& source,
                                          *grains[0],
                                          reader->sampleRate,
                                          allNotes,
-                                         64, 0.05, 2.0, 4.0);
-    
-    // auto samplerSound = new SamplerSound("Sample", *reader, allNotes, 64, 0.05, 2.0, 4.0);
-        
+                                         64,
+                                         envelopeAttack,
+                                         envelopeRelease,
+                                         4.0);
+            
     synth.addSound(granularSound);
 }
 
