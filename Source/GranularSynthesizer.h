@@ -79,6 +79,11 @@ private:
     GranularAudioSource granularAudioSource;
     File granularSourceFile;
     
+    Slider grainIDSlider;
+    Label grainIDLabel;
+    Slider grainSizeSlider;
+    Label grainSizeLabel;
+    
     AudioThumbnailCache thumbnailCache;
     AudioThumbnail thumbnail;
     AudioFormatManager formatManager;

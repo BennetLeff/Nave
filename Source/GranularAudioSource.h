@@ -11,6 +11,8 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "GranularSound.h"
+#include "GranularVoice.h"
 
 //==============================================================================
 
@@ -43,11 +45,6 @@ struct GrainASR
  * moving the start and stop positions around throughout the sound.
  * Additionally, this will allow us to buffer the files data (which is itself a
  * buffer) into grains.
- *
- * We can store grains in a table for more efficient playback or we can just
- * store the grains start and stop positions in a table for lookup. We'll start
- * with storing stop and start positions though caching buffers may become useful
- * later as the synth is expanded.
  *
  * For the time being, the method of Quasi-Synchronous Granular Synthesis, will be
  * what this class implements.
@@ -88,22 +85,26 @@ public:
     }
         
     void setSourceFile(const File& newFile);
-        
+    
+    // getter method for grains
+    std::vector<AudioBuffer<float>*> getGrains() { return grains; }
+    
 private:
     // Parses a audio file's samples and creates partitioned grains
     // of size samplesPerGrain.
-    void granulateSourceFile();
+    std::vector<AudioBuffer<float>*> granulateSourceFile();
     
     // Assuming a constant grain size for each grain.
     // The unit for grainSize is miliseconds and the default is 10 ms.
     double grainSize;
     double samplesPerGrain;
     
-    // grains is set in granulateSourceFile.
-    // It is a vector of sequential grains in a sample.
-    // Each grain is captured by an AudioBuffer
-    // for ease of use with the JUCE API.
-    std::vector<AudioBuffer<float>*> grains;
+    /* grains is set with the value of granulateSourceFile.
+     * It is a vector of sequential grains in a sample.
+     * Each grain is captured by an AudioBuffer
+     * for ease of use with the JUCE API.
+     */
+     std::vector<AudioBuffer<float>*> grains;
     
     // Fields for MIDI interaction
     MidiKeyboardState& keyboardState;

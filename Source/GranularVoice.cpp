@@ -65,7 +65,7 @@ void GranularVoice::renderNextBlock (AudioBuffer<float>& outputBuffer, int start
 {
     if (auto* playingSound = static_cast<GranularSound*> (getCurrentlyPlayingSound().get()))
     {
-        auto& data = *playingSound->data;
+        auto& data = playingSound->grainData;
         const float* const inL = data.getReadPointer (0);
         const float* const inR = data.getNumChannels() > 1 ? data.getReadPointer (1) : nullptr;
 

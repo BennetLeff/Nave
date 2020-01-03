@@ -17,7 +17,7 @@ GranularAudioSource::GranularAudioSource(MidiKeyboardState& keyState)
         keyboardState(keyState)
 {
     for(auto i = 0; i < 4; ++i)
-        synth.addVoice(new SamplerVoice());
+        synth.addVoice(new GranularVoice());
 }
 
 
@@ -55,11 +55,18 @@ void GranularAudioSource::setSourceFile(const File& newFile)
     
     allNotes.setRange(0, 128, true);
     
-    auto samplerSound = new SamplerSound("Sample", *reader, allNotes, 64, 0.05, 2.0, 4.0);
-        
-    synth.addSound(samplerSound);
+    grains = granulateSourceFile();
     
-    granulateSourceFile();
+    auto granularSound = new GranularSound ("Grain",
+                                        //AudioFormatReader& source,
+                                         *grains[0],
+                                         reader->sampleRate,
+                                         allNotes,
+                                         64, 0.05, 2.0, 4.0);
+    
+    // auto samplerSound = new SamplerSound("Sample", *reader, allNotes, 64, 0.05, 2.0, 4.0);
+        
+    synth.addSound(granularSound);
 }
 
 void GranularAudioSource::releaseResources()
@@ -79,8 +86,10 @@ void GranularAudioSource::getNextAudioBlock(const AudioSourceChannelInfo& buffer
                           bufferToFill.startSample, bufferToFill.numSamples);
 }
 
-void GranularAudioSource::granulateSourceFile()
+std::vector<AudioBuffer<float>*> GranularAudioSource::granulateSourceFile()
 {
+    std::vector<AudioBuffer<float>*> paritionedGrains;
+    
     if (reader != nullptr)
         for (int i = 0; i < reader->lengthInSamples - samplesPerGrain; i += samplesPerGrain)
         {
@@ -89,10 +98,12 @@ void GranularAudioSource::granulateSourceFile()
             
             DBG("Sample at i = " << i << " " << currGrainBuffer->getSample(0, 0));
             
-            grains.push_back(currGrainBuffer);
+            paritionedGrains.push_back(currGrainBuffer);
         }
     else
         DBG("AudioFormatReader was null?");
+    
+    return paritionedGrains;
 }
 
 GranularAudioSource::~GranularAudioSource()
