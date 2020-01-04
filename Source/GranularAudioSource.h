@@ -1,6 +1,5 @@
 /*
   ==============================================================================
-
     GranularAudioSource.h
     Created: 18 Dec 2019 2:53:49pm
     Author:  Bennet Leff
@@ -11,6 +10,8 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "GranularSound.h"
+#include "GranularVoice.h"
 
 //==============================================================================
 
@@ -44,11 +45,6 @@ struct GrainASR
  * Additionally, this will allow us to buffer the files data (which is itself a
  * buffer) into grains.
  *
- * We can store grains in a table for more efficient playback or we can just
- * store the grains start and stop positions in a table for lookup. We'll start
- * with storing stop and start positions though caching buffers may become useful
- * later as the synth is expanded.
- *
  * For the time being, the method of Quasi-Synchronous Granular Synthesis, will be
  * what this class implements.
  */
@@ -56,48 +52,58 @@ class GranularAudioSource    : public AudioSource
 {
 public:
     GranularAudioSource(MidiKeyboardState& keyState);
-        
-        void setUsingSamplerSound()
-        {
-            synth.clearSounds();
-        }
-        
-        void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override
-        {
-            synth.setCurrentPlaybackSampleRate (sampleRate);
-            midiCollector.reset (sampleRate);
-        }
-        
-        void releaseResources() override;
-        
-        void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override
-        {
-            bufferToFill.clearActiveBufferRegion();
-            
-            MidiBuffer incomingMidi;
-            midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
-            
-            keyboardState.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
-            
-            synth.renderNextBlock(*bufferToFill.buffer, incomingMidi,
-                                  bufferToFill.startSample, bufferToFill.numSamples);
-        }
-        
-        MidiMessageCollector* getMidiCollector()
-        {
-            return &midiCollector;
-        }
-            
-        void setSourceFile(const File& newFile);
-        
-    private:
-        
     
+    // The JUCE API still uses raw pointers in some places
+    // so we'll have to manually delete them.
+    ~GranularAudioSource();
+        
+    void setUsingSamplerSound()
+    {
+        synth.clearSounds();
+    }
     
-
+    /*
+     * sampleRate is in hertz or cycles per second. The grain size is
+     * dependent on sampleRate. If the sampleRate is 44100 samples per second
+     * then a 10 ms grain size corresponds to 441 samples.
+     */
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override
+    {
+        samplesPerGrain = sampleRate * (grainSize / 1000);
+        synth.setCurrentPlaybackSampleRate (sampleRate);
+        midiCollector.reset (sampleRate);
+    }
+    
+    void releaseResources() override;
+    
+    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
+    
+    MidiMessageCollector* getMidiCollector()
+    {
+        return &midiCollector;
+    }
+        
+    void setSourceFile(const File& newFile);
+    
+    // getter method for grains
+    std::vector<AudioBuffer<float>*> getGrains() { return grains; }
+    
 private:
+    // Parses a audio file's samples and creates partitioned grains
+    // of size samplesPerGrain.
+    std::vector<AudioBuffer<float>*> granulateSourceFile();
+    
     // Assuming a constant grain size for each grain.
-    int grainSize;
+    // The unit for grainSize is miliseconds and the default is 10 ms.
+    double grainSize;
+    double samplesPerGrain;
+    
+    /* grains is set with the value of granulateSourceFile.
+     * It is a vector of sequential grains in a sample.
+     * Each grain is captured by an AudioBuffer
+     * for ease of use with the JUCE API.
+     */
+    std::vector<AudioBuffer<float>*> grains;
     
     // Fields for MIDI interaction
     MidiKeyboardState& keyboardState;
@@ -107,8 +113,13 @@ private:
     // allNotes will be a range of 0-127
     BigInteger allNotes;
     
+    double envelopeAttack;
+    double envelopeRelease;
+    
     // The source file or sample we want to "granulate"
     File sourceFile;
+    // Must be a raw pointer because of the JUCE API.
+    AudioFormatReader* reader;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GranularAudioSource)
 };

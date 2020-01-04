@@ -19,6 +19,13 @@ GranularSynthesizer::GranularSynthesizer(MidiKeyboardState& keyboardState)
 {
     formatManager.registerBasicFormats();
     thumbnail.addChangeListener(this);
+    
+    addAndMakeVisible (grainIDSlider);
+    // set this once we know grain count
+    grainIDSlider.setRange (0, 100);
+    grainIDSlider.setTextValueSuffix (" Grain ID");
+
+    grainIDSlider.onValueChange = [this] { DBG("Value changed"); };
 }
 
 GranularSynthesizer::~GranularSynthesizer()
@@ -37,8 +44,11 @@ void GranularSynthesizer::paint (Graphics& g)
     g.drawText ("Sampler", getLocalBounds(),
                 Justification::centred, true);   // draw some placeholder text
     
+    
+    grainIDSlider.setBounds (100, 20, getWidth() - 100 - 10, 20);
+    
     // Painting the audio waveform
-    Rectangle<int> thumbnailBounds (10, 20, getWidth() - 20, getHeight() - 40);
+    Rectangle<int> thumbnailBounds (10, 50, getWidth() - 20, getHeight() - 40);
     
     if (thumbnail.getNumChannels() == 0)
         paintIfNoFileLoaded (g, thumbnailBounds);
