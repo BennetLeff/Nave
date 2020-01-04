@@ -13,12 +13,15 @@
 
 //==============================================================================
 GranularAudioSource::GranularAudioSource(MidiKeyboardState& keyState)
-    : keyboardState(keyState)
+    :   grainSize(10), // 10 ms
+        keyboardState(keyState),
+        envelopeAttack(0.05), // 50 ms
+        envelopeRelease(2.0)  // 2 seconds
+        
 {
     for(auto i = 0; i < 4; ++i)
-        synth.addVoice(new SamplerVoice());
+        synth.addVoice(new GranularVoice());
 }
-
 
 
 //==============================================================================
@@ -29,8 +32,8 @@ void GranularAudioSource::setSourceFile(const File& newFile)
     AudioFormatManager formatManager;
     formatManager.registerBasicFormats();
 
-    auto* reader = formatManager.createReaderFor (sourceFile); 
-
+    reader = formatManager.createReaderFor (sourceFile);
+    
     AudioSampleBuffer fileBuffer;
 
     if (reader != nullptr)
@@ -55,13 +58,61 @@ void GranularAudioSource::setSourceFile(const File& newFile)
     
     allNotes.setRange(0, 128, true);
     
-    auto samplerSound = new SamplerSound("Sample", *reader, allNotes, 64, 0.05, 2.0, 4.0);
+    grains = granulateSourceFile();
     
-    delete reader;
-    
-    synth.addSound(samplerSound);
+    auto granularSound = new GranularSound ("Grain",
+                                         *grains[0],
+                                         reader->sampleRate,
+                                         allNotes,
+                                         64,
+                                         envelopeAttack,
+                                         envelopeRelease,
+                                         4.0);
+            
+    synth.addSound(granularSound);
 }
 
 void GranularAudioSource::releaseResources()
 {
+}
+
+void GranularAudioSource::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
+{
+    bufferToFill.clearActiveBufferRegion();
+    
+    MidiBuffer incomingMidi;
+    midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
+    
+    keyboardState.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
+    
+    synth.renderNextBlock(*bufferToFill.buffer, incomingMidi,
+                          bufferToFill.startSample, bufferToFill.numSamples);
+}
+
+std::vector<AudioBuffer<float>*> GranularAudioSource::granulateSourceFile()
+{
+    std::vector<AudioBuffer<float>*> paritionedGrains;
+    
+    if (reader != nullptr)
+        for (int i = 0; i < reader->lengthInSamples - samplesPerGrain; i += samplesPerGrain)
+        {
+            AudioBuffer<float>* currGrainBuffer = new AudioBuffer<float>(2, samplesPerGrain);
+            reader->read(currGrainBuffer, 0, samplesPerGrain, i, true, true);
+            
+            DBG("Sample at i = " << i << " " << currGrainBuffer->getSample(0, 0));
+            
+            paritionedGrains.push_back(currGrainBuffer);
+        }
+    else
+        DBG("AudioFormatReader was null?");
+    
+    return paritionedGrains;
+}
+
+GranularAudioSource::~GranularAudioSource()
+{
+    delete reader;
+    
+    for (const auto& buffer : grains)
+        delete buffer;
 }

@@ -34,12 +34,14 @@ public:
                                         source, in seconds
     */
     GranularSound (const String& name,
-                  AudioFormatReader& source,
-                  const BigInteger& midiNotes,
-                  int midiNoteForNormalPitch,
-                  double attackTimeSecs,
-                  double releaseTimeSecs,
-                  double maxSampleLengthSeconds);
+                  //AudioFormatReader& source,
+                   AudioBuffer<float>& grainData,
+                   const int grainSampleRate,
+                   const BigInteger& midiNotes,
+                   int midiNoteForNormalPitch,
+                   double attackTimeSecs,
+                   double releaseTimeSecs,
+                   double maxSampleLengthSeconds);
 
     /** Destructor. */
     ~GranularSound() override;
@@ -51,7 +53,7 @@ public:
     /** Returns the audio sample data.
         This could return nullptr if there was a problem loading the data.
     */
-    AudioBuffer<float>* getAudioData() const noexcept       { return data.get(); }
+    AudioBuffer<float>* getAudioData() const noexcept       { return &grainData; }
 
     //==============================================================================
     /** Changes the parameters of the ADSR envelope which will be applied to the sample. */
@@ -66,7 +68,8 @@ private:
     friend class GranularVoice;
 
     String name;
-    std::unique_ptr<AudioBuffer<float>> data;
+    AudioBuffer<float>& grainData;
+    // std::unique_ptr<AudioBuffer<float>> data;
     double sourceSampleRate;
     BigInteger midiNotes;
     int length = 0, midiRootNote = 0;
