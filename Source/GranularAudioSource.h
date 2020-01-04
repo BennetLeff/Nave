@@ -98,7 +98,11 @@ private:
     double grainSize;
     double samplesPerGrain;
     
-    /* grains is set with the value of granulateSourceFile.
+    // The index of the grain in grains which we want to playback.
+    int grainID;
+    
+    /*
+     * grains is set with the value of granulateSourceFile.
      * It is a vector of sequential grains in a sample.
      * Each grain is captured by an AudioBuffer
      * for ease of use with the JUCE API.
