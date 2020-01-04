@@ -25,7 +25,10 @@ GranularSynthesizer::GranularSynthesizer(MidiKeyboardState& keyboardState)
     grainIDSlider.setRange (0, 100);
     grainIDSlider.setTextValueSuffix (" Grain ID");
 
-    grainIDSlider.onValueChange = [this] { DBG("Value changed"); };
+    grainIDSlider.onValueChange = [this] {
+        DBG("Value changed to" << grainIDSlider.getValue());
+        granularAudioSource.setGrainID(grainIDSlider.getValue());
+    };
 }
 
 GranularSynthesizer::~GranularSynthesizer()

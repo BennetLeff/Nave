@@ -54,6 +54,8 @@ public:
         This could return nullptr if there was a problem loading the data.
     */
     AudioBuffer<float>* getAudioData() const noexcept       { return &grainData; }
+    
+    void setAudioData(AudioBuffer<float>& newData) { grainData = newData; }
 
     //==============================================================================
     /** Changes the parameters of the ADSR envelope which will be applied to the sample. */

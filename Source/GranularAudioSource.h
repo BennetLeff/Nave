@@ -85,6 +85,8 @@ public:
         
     void setSourceFile(const File& newFile);
     
+    void setGrainID(const int newGrainID);
+    
     // getter method for grains
     std::vector<AudioBuffer<float>*> getGrains() { return grains; }
     
