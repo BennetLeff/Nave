@@ -3,6 +3,10 @@
 <JUCERPROJECT id="SyQ9g4" name="Nave" projectType="guiapp" jucerVersion="5.4.5">
   <MAINGROUP id="ZqHcS3" name="Nave">
     <GROUP id="{C3E1973A-F9A9-EA2C-7C06-AC04BFDFD624}" name="Source">
+      <FILE id="zh9r7I" name="InteractiveAudioThumbnail.cpp" compile="1"
+            resource="0" file="Source/InteractiveAudioThumbnail.cpp"/>
+      <FILE id="OTMy27" name="InteractiveAudioThumbnail.h" compile="0" resource="0"
+            file="Source/InteractiveAudioThumbnail.h"/>
       <FILE id="hDRftg" name="GranularSynthesizer.cpp" compile="1" resource="0"
             file="Source/GranularSynthesizer.cpp"/>
       <FILE id="eC6mvR" name="GranularSynthesizer.h" compile="0" resource="0"
