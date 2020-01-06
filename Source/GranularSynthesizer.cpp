@@ -16,10 +16,10 @@ GranularSynthesizer::GranularSynthesizer(MidiKeyboardState& keyboardState)
         : granularAudioSource(keyboardState),
           grainSize(10), // 10 ms
           thumbnailCache (5),
-          thumbnail(512, formatManager, thumbnailCache)
+          intThumbnail(512, formatManager, thumbnailCache)
 {
     formatManager.registerBasicFormats();
-    thumbnail.addChangeListener(this);
+    intThumbnail.addChangeListener(this);
     
     addAndMakeVisible (grainIDSlider);
     // set this once we know grain count
@@ -54,10 +54,7 @@ void GranularSynthesizer::paint (Graphics& g)
     // Painting the audio waveform
     Rectangle<int> thumbnailBounds (10, 50, getWidth() - 20, getHeight() - 40);
     
-    if (thumbnail.getNumChannels() == 0)
-        paintIfNoFileLoaded (g, thumbnailBounds);
-    else
-        paintIfFileLoaded (g, thumbnailBounds);
+    intThumbnail.draw(g, thumbnailBounds);
 }
 
 void GranularSynthesizer::resized()
@@ -71,7 +68,7 @@ void GranularSynthesizer::setSourceFile(const File& newFile)
 {
     granularSourceFile = newFile;
     const auto granulatedSampleData = granularAudioSource.setSourceFile(newFile);
-    thumbnail.setSource(new FileInputSource(newFile));
+    intThumbnail.setSource(new FileInputSource(newFile));
     
     const auto samplesPerGrain = granulatedSampleData.sampleRate * (granulatedSampleData.grainSize / 1000);
     
@@ -85,7 +82,7 @@ void GranularSynthesizer::setSourceFile(const File& newFile)
 
 void GranularSynthesizer::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (source == &thumbnail)
+    if (source == &intThumbnail)
     {
         repaint();
     }
