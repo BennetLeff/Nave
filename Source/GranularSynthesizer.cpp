@@ -21,15 +21,7 @@ GranularSynthesizer::GranularSynthesizer(MidiKeyboardState& keyboardState)
     formatManager.registerBasicFormats();
     intThumbnail.addChangeListener(this);
     
-    addAndMakeVisible (grainIDSlider);
-    // set this once we know grain count
-    grainIDSlider.setRange (0, 1);
-    grainIDSlider.setTextValueSuffix (" Grain ID");
-
-    grainIDSlider.onValueChange = [this] {
-        DBG("Value changed to" << grainIDSlider.getValue());
-        granularAudioSource.setGrainID(grainIDSlider.getValue());
-    };
+    addMouseListener(&intThumbnail, true);
 }
 
 GranularSynthesizer::~GranularSynthesizer()
@@ -48,11 +40,8 @@ void GranularSynthesizer::paint (Graphics& g)
     g.drawText ("Sampler", getLocalBounds(),
                 Justification::centred, true);   // draw some placeholder text
     
-    
-    grainIDSlider.setBounds (100, 20, getWidth() - 100 - 10, 20);
-    
     // Painting the audio waveform
-    Rectangle<int> thumbnailBounds (10, 50, getWidth() - 20, getHeight() - 40);
+    Rectangle<int> thumbnailBounds (10, 10, getWidth() - 20, getHeight() - 20);
     
     intThumbnail.draw(g, thumbnailBounds);
 }
@@ -70,20 +59,21 @@ void GranularSynthesizer::setSourceFile(const File& newFile)
     const auto granulatedSampleData = granularAudioSource.setSourceFile(newFile);
     intThumbnail.setSource(new FileInputSource(newFile));
     
-    const auto samplesPerGrain = granulatedSampleData.sampleRate * (granulatedSampleData.grainSize / 1000);
-    
-    DBG("granulatedSampleData.sampleRate: " << granulatedSampleData.sampleRate);
-    DBG("granulatedSampleData.grainSize / 1000: " << granulatedSampleData.grainSize / 1000);
-    DBG("granulatedSampleData.numSamples / samplesPerGrain: " << static_cast<int>(granulatedSampleData.numSamples / samplesPerGrain));
-    
-    const auto numIntervals = static_cast<int>(granulatedSampleData.numSamples / samplesPerGrain);
-    grainIDSlider.setRange (0, numIntervals);
+//    const auto samplesPerGrain = granulatedSampleData.sampleRate * (granulatedSampleData.grainSize / 1000);
+//    const auto numIntervals = static_cast<int>(granulatedSampleData.numSamples / samplesPerGrain);
 }
 
 void GranularSynthesizer::changeListenerCallback(ChangeBroadcaster *source)
 {
+    // Used when the audio thumbnail needs to be redrawn or the
+    // grain selector needs to be redrawn.
     if (source == &intThumbnail)
     {
         repaint();
     }
+}
+
+void GranularSynthesizer::updateCurrentGrain()
+{
+    
 }

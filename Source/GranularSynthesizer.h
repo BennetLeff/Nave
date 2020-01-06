@@ -53,12 +53,11 @@ public:
     
 private:
     void changeListenerCallback(ChangeBroadcaster* source) override;
+    void updateCurrentGrain();
     
     GranularAudioSource granularAudioSource;
     File granularSourceFile;
     
-    Slider grainIDSlider;
-    Label grainIDLabel;
     Slider grainSizeSlider;
     Label grainSizeLabel;
     

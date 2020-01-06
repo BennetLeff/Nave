@@ -22,28 +22,12 @@ public:
     
     void draw(Graphics& g, const Rectangle<int>& thumbnailBounds);
     
-    void paintIfNoFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds)
-    {
-        g.setColour (Colours::darkgrey);
-        g.fillRect (thumbnailBounds);
-        g.setColour (Colours::white);
-        g.drawFittedText ("No File Loaded", thumbnailBounds, Justification::centred, 1.0f);
-    }
-
-    void paintIfFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds)
-    {
-        g.setColour (Colours::white);
-        g.fillRect (thumbnailBounds);
-     
-        g.setColour (Colours::red);
-     
-        drawChannels (g,
-                      thumbnailBounds,
-                      0.0,                                    // start time
-                      getTotalLength(),                       // end time
-                      1.0f);                                  // vertical zoom
-    }
-    
 private:
-    void paintOverChildren(Graphics& g) override;
+    void mouseDown(const MouseEvent &event) override;
+    
+    void paintIfNoFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds);
+    void paintIfFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds);
+    
+    DrawableRectangle grainSelector;
+    Rectangle<int> audioThumbnailBounds;
 };
