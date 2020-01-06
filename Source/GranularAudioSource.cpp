@@ -26,7 +26,7 @@ GranularAudioSource::GranularAudioSource(MidiKeyboardState& keyState)
 
 
 //==============================================================================
-void GranularAudioSource::setSourceFile(const File& newFile)
+const SampleData GranularAudioSource::setSourceFile(const File& newFile)
 {
     sourceFile = newFile;
 
@@ -71,6 +71,12 @@ void GranularAudioSource::setSourceFile(const File& newFile)
                                          4.0);
             
     synth.addSound(granularSound);
+    
+    // const SampleData parsedData = {reader->sampleRate, reader->lengthInSamples, grainSize};
+    
+    DBG("reader->sampleRate: " << reader->sampleRate);
+    
+    return SampleData{reader->sampleRate, reader->lengthInSamples, grainSize};
 }
 
 void GranularAudioSource::releaseResources()
@@ -117,22 +123,6 @@ void GranularAudioSource::setGrainID(const int newGrainID)
         // Update the grainID
         grainID = newGrainID;
         
-    //    // Remove the old sound
-    //    synth.clearSounds();
-    //
-    //    // Create a new GranularSound with a buffer located in the
-    //    // vector at the index of the new ID.
-    //    auto granularSound = new GranularSound ("Grain",
-    //                                         *grains[grainID],
-    //                                         reader->sampleRate,
-    //                                         allNotes,
-    //                                         64,
-    //                                         envelopeAttack,
-    //                                         envelopeRelease,
-    //                                         4.0);
-    //
-    //    // Add the sound we just created.
-    //    synth.addSound(granularSound);
         // There should only be one sound so we getSound 0
         // We case this SynthesiserSound* to a GranularSound* and update its data.
         auto sound = static_cast<GranularSound*>(synth.getSound(0).get());
