@@ -14,6 +14,7 @@
 //==============================================================================
 GranularSynthesizer::GranularSynthesizer(MidiKeyboardState& keyboardState)
         : granularAudioSource(keyboardState),
+          grainSize(10), // 10 ms
           thumbnailCache (5),
           thumbnail(512, formatManager, thumbnailCache)
 {
@@ -22,10 +23,13 @@ GranularSynthesizer::GranularSynthesizer(MidiKeyboardState& keyboardState)
     
     addAndMakeVisible (grainIDSlider);
     // set this once we know grain count
-    grainIDSlider.setRange (0, 100);
+    grainIDSlider.setRange (0, 1);
     grainIDSlider.setTextValueSuffix (" Grain ID");
 
-    grainIDSlider.onValueChange = [this] { DBG("Value changed"); };
+    grainIDSlider.onValueChange = [this] {
+        DBG("Value changed to" << grainIDSlider.getValue());
+        granularAudioSource.setGrainID(grainIDSlider.getValue());
+    };
 }
 
 GranularSynthesizer::~GranularSynthesizer()
@@ -66,8 +70,17 @@ void GranularSynthesizer::resized()
 void GranularSynthesizer::setSourceFile(const File& newFile)
 {
     granularSourceFile = newFile;
-    granularAudioSource.setSourceFile(newFile);
+    const auto granulatedSampleData = granularAudioSource.setSourceFile(newFile);
     thumbnail.setSource(new FileInputSource(newFile));
+    
+    const auto samplesPerGrain = granulatedSampleData.sampleRate * (granulatedSampleData.grainSize / 1000);
+    
+    DBG("granulatedSampleData.sampleRate: " << granulatedSampleData.sampleRate);
+    DBG("granulatedSampleData.grainSize / 1000: " << granulatedSampleData.grainSize / 1000);
+    DBG("granulatedSampleData.numSamples / samplesPerGrain: " << static_cast<int>(granulatedSampleData.numSamples / samplesPerGrain));
+    
+    const auto numIntervals = static_cast<int>(granulatedSampleData.numSamples / samplesPerGrain);
+    grainIDSlider.setRange (0, numIntervals);
 }
 
 void GranularSynthesizer::changeListenerCallback(ChangeBroadcaster *source)

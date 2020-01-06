@@ -74,7 +74,6 @@ private:
                                 thumbnail.getTotalLength(),             // end time
                                 1.0f);                                  // vertical zoom
     }
-
     
     GranularAudioSource granularAudioSource;
     File granularSourceFile;
@@ -83,6 +82,8 @@ private:
     Label grainIDLabel;
     Slider grainSizeSlider;
     Label grainSizeLabel;
+    
+    const int grainSize;
     
     AudioThumbnailCache thumbnailCache;
     AudioThumbnail thumbnail;

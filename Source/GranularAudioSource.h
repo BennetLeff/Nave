@@ -38,6 +38,19 @@ struct GrainASR
 };
 
 /*
+ * This struct is returned by setSourceFile.
+ * This enables the GranularSynthesiser class to get necessary
+ * information about the file while keeping all parsing inside the
+ * GranularAudioSource class.
+ */
+struct SampleData
+{
+    const double sampleRate;
+    const juce::int64 numSamples;
+    double grainSize;
+};
+
+/*
  * The GranularAudioSource should be similar to the SamplerAudioSource.
  * It is no longer leverages the SamplerSound and SamplerVoice classes but
  * instead overrides them. This enables more advanced functionality such as
@@ -83,7 +96,9 @@ public:
         return &midiCollector;
     }
         
-    void setSourceFile(const File& newFile);
+    const SampleData setSourceFile(const File& newFile);
+    
+    void setGrainID(const int newGrainID);
     
     // getter method for grains
     std::vector<AudioBuffer<float>*> getGrains() { return grains; }

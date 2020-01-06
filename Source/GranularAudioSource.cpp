@@ -14,6 +14,7 @@
 //==============================================================================
 GranularAudioSource::GranularAudioSource(MidiKeyboardState& keyState)
     :   grainSize(10), // 10 ms
+        grainID(0),
         keyboardState(keyState),
         envelopeAttack(0.05), // 50 ms
         envelopeRelease(2.0)  // 2 seconds
@@ -25,7 +26,7 @@ GranularAudioSource::GranularAudioSource(MidiKeyboardState& keyState)
 
 
 //==============================================================================
-void GranularAudioSource::setSourceFile(const File& newFile)
+const SampleData GranularAudioSource::setSourceFile(const File& newFile)
 {
     sourceFile = newFile;
 
@@ -61,7 +62,7 @@ void GranularAudioSource::setSourceFile(const File& newFile)
     grains = granulateSourceFile();
     
     auto granularSound = new GranularSound ("Grain",
-                                         *grains[0],
+                                         *grains[grainID],
                                          reader->sampleRate,
                                          allNotes,
                                          64,
@@ -70,6 +71,12 @@ void GranularAudioSource::setSourceFile(const File& newFile)
                                          4.0);
             
     synth.addSound(granularSound);
+    
+    // const SampleData parsedData = {reader->sampleRate, reader->lengthInSamples, grainSize};
+    
+    DBG("reader->sampleRate: " << reader->sampleRate);
+    
+    return SampleData{reader->sampleRate, reader->lengthInSamples, grainSize};
 }
 
 void GranularAudioSource::releaseResources()
@@ -107,6 +114,20 @@ std::vector<AudioBuffer<float>*> GranularAudioSource::granulateSourceFile()
         DBG("AudioFormatReader was null?");
     
     return paritionedGrains;
+}
+
+void GranularAudioSource::setGrainID(const int newGrainID)
+{
+    if (newGrainID < grains.size())
+    {
+        // Update the grainID
+        grainID = newGrainID;
+        
+        // There should only be one sound so we getSound 0
+        // We case this SynthesiserSound* to a GranularSound* and update its data.
+        auto sound = static_cast<GranularSound*>(synth.getSound(0).get());
+        sound->setAudioData(*grains[grainID]);
+    }
 }
 
 GranularAudioSource::~GranularAudioSource()
