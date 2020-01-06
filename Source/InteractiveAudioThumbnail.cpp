@@ -15,7 +15,7 @@ InteractiveAudioThumbnail::InteractiveAudioThumbnail(int sourceSamplesPerThumbna
                                                      AudioThumbnailCache &cacheToUse)
     : AudioThumbnail(sourceSamplesPerThumbnailSample, formatManagerToUse, cacheToUse)
 {
-    // thumbnail = std::make_unique<AudioThumbnail>(sourceSamplesPerThumbnailSample, formatManagerToUse, cacheToUse);
+
 }
 
 void InteractiveAudioThumbnail::paintOverChildren(Graphics& g)
@@ -43,5 +43,12 @@ void InteractiveAudioThumbnail::draw(Graphics &g, const Rectangle<int> &thumbnai
     if (getNumChannels() == 0)
         paintIfNoFileLoaded (g, thumbnailBounds);
     else
+    {
+        
         paintIfFileLoaded (g, thumbnailBounds);
+        
+        g.setColour (Colours::blue);
+        g.setOpacity(0.3);
+        g.fillRect(thumbnailBounds.getX(), thumbnailBounds.getY(), 20, thumbnailBounds.getHeight());
+    }
 }
