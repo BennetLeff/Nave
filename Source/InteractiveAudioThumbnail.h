@@ -21,7 +21,6 @@ public:
     void resized() override;
     
     void draw(Graphics& g, const Rectangle<int>& thumbnailBounds);
-    
 private:
     void mouseDown(const MouseEvent &event) override;
     

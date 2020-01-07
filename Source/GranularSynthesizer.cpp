@@ -56,7 +56,7 @@ void GranularSynthesizer::resized()
 void GranularSynthesizer::setSourceFile(const File& newFile)
 {
     granularSourceFile = newFile;
-    const auto granulatedSampleData = granularAudioSource.setSourceFile(newFile);
+//    const auto granulatedSampleData = granularAudioSource.setSourceFile(newFile);
     intThumbnail.setSource(new FileInputSource(newFile));
     
 //    const auto samplesPerGrain = granulatedSampleData.sampleRate * (granulatedSampleData.grainSize / 1000);

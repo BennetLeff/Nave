@@ -2,3 +2,5 @@
 *.pbxproj
 *.xcuserstate
 Builds/*
+
+.DS_Store
