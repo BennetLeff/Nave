@@ -16,25 +16,8 @@
 class GranularSound : public SynthesiserSound
 {
 public:
-    //==============================================================================
-    /** Creates a sampled sound from an audio reader.
-        This will attempt to load the audio from the source into memory and store
-        it in this object.
-        @param name         a name for the sample
-        @param source       the audio to load. This object can be safely deleted by the
-                            caller after this constructor returns
-        @param midiNotes    the set of midi keys that this sound should be played on. This
-                            is used by the SynthesiserSound::appliesToNote() method
-        @param midiNoteForNormalPitch   the midi note at which the sample should be played
-                                        with its natural rate. All other notes will be pitched
-                                        up or down relative to this one
-        @param attackTimeSecs   the attack (fade-in) time, in seconds
-        @param releaseTimeSecs  the decay (fade-out) time, in seconds
-        @param maxSampleLengthSeconds   a maximum length of audio to read from the audio
-                                        source, in seconds
-    */
+
     GranularSound (const String& name,
-                  //AudioFormatReader& source,
                    AudioBuffer<float>& grainData,
                    const int grainSampleRate,
                    const BigInteger& midiNotes,
@@ -71,7 +54,6 @@ private:
 
     String name;
     AudioBuffer<float>& grainData;
-    // std::unique_ptr<AudioBuffer<float>> data;
     double sourceSampleRate;
     BigInteger midiNotes;
     int length = 0, midiRootNote = 0;

@@ -18,8 +18,7 @@ GranularAudioSource::GranularAudioSource(MidiKeyboardState& keyState)
         keyboardState(keyState),
         envelopeAttack(0.05), // 50 ms
         envelopeRelease(2.0)  // 2 seconds
-        
-{
+{    
     for(auto i = 0; i < 4; ++i)
         synth.addVoice(new GranularVoice());
 }
@@ -71,9 +70,7 @@ const SampleData GranularAudioSource::setSourceFile(const File& newFile)
                                          4.0);
             
     synth.addSound(granularSound);
-    
-    // const SampleData parsedData = {reader->sampleRate, reader->lengthInSamples, grainSize};
-    
+        
     DBG("reader->sampleRate: " << reader->sampleRate);
     
     return SampleData{reader->sampleRate, reader->lengthInSamples, grainSize};
@@ -132,7 +129,8 @@ void GranularAudioSource::setGrainID(const int newGrainID)
 
 GranularAudioSource::~GranularAudioSource()
 {
-    delete reader;
+    if (reader)
+        delete reader;
     
     for (const auto& buffer : grains)
         delete buffer;

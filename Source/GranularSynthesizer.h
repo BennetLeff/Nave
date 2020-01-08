@@ -12,6 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GranularAudioSource.h"
+#include "InteractiveAudioThumbnail.h"
 
 //==============================================================================
 /*
@@ -52,41 +53,19 @@ public:
     
 private:
     void changeListenerCallback(ChangeBroadcaster* source) override;
-    
-    void paintIfNoFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds)
-    {
-        g.setColour (Colours::darkgrey);
-        g.fillRect (thumbnailBounds);
-        g.setColour (Colours::white);
-        g.drawFittedText ("No File Loaded", thumbnailBounds, Justification::centred, 1.0f);
-    }
-
-    void paintIfFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds)
-    {
-        g.setColour (Colours::white);
-        g.fillRect (thumbnailBounds);
-     
-        g.setColour (Colours::red);
-     
-        thumbnail.drawChannels (g,
-                                thumbnailBounds,
-                                0.0,                                    // start time
-                                thumbnail.getTotalLength(),             // end time
-                                1.0f);                                  // vertical zoom
-    }
+    void updateCurrentGrain();
     
     GranularAudioSource granularAudioSource;
     File granularSourceFile;
     
-    Slider grainIDSlider;
-    Label grainIDLabel;
     Slider grainSizeSlider;
     Label grainSizeLabel;
     
     const int grainSize;
     
     AudioThumbnailCache thumbnailCache;
-    AudioThumbnail thumbnail;
+    //AudioThumbnail thumbnail;
+    InteractiveAudioThumbnail intThumbnail;
     AudioFormatManager formatManager;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GranularSynthesizer)
