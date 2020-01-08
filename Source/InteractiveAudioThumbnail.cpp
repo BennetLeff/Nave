@@ -77,10 +77,10 @@ void InteractiveAudioThumbnail::paintIfNoFileLoaded (Graphics& g, const Rectangl
 
 void InteractiveAudioThumbnail::paintIfFileLoaded (Graphics& g, const Rectangle<int>& thumbnailBounds)
 {
-    g.setColour (Colours::white);
+    g.setColour (Colours::darkgrey);
     g.fillRect (thumbnailBounds);
  
-    g.setColour (Colours::red);
+    g.setColour (Colours::lightgrey);
  
     drawChannels (g,
                   thumbnailBounds,
